@@ -1,0 +1,152 @@
+package com.lenovo.feizai.optiondialog;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.lenovo.feizai.optiondialog.customView.OptionButton;
+import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListen;
+
+/**
+ * @author feizai
+ * @date 2021/5/30 0030 PM 4:36:34
+ */
+public class OptionDialog {
+    private Context mContext;
+    private Dialog dialog;
+    private LinearLayout layout;
+    private LinearLayout root;
+    private OptionButton[] buttons;
+    private TextView title;
+    private View title_line;
+    private Button button;
+
+    public OptionDialog(Context context) {
+        mContext = context;
+        initDialog();
+    }
+
+    private void initDialog() {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_dialog, null, false);
+        root = view.findViewById(R.id.root);
+        layout = view.findViewById(R.id.dialog_layout);
+        title = view.findViewById(R.id.title);
+        title_line = view.findViewById(R.id.title_line);
+        button = view.findViewById(R.id.cancel_button);
+        if (dialog == null) {
+            dialog = new Dialog(mContext,R.style.optiondialogstyle);
+        }
+        dialog.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        Window window = dialog.getWindow();
+        // 设置显示动画
+        window.setWindowAnimations(R.style.option_dialog_animstyle);
+        WindowManager.LayoutParams wl = window.getAttributes();
+        wl.x = 0;
+        wl.y = ((Activity) mContext).getWindowManager().getDefaultDisplay()
+                .getHeight();
+        // 以下这两句是为了保证按钮可以水平满屏
+        wl.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        wl.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        // 设置显示位置
+        dialog.onWindowAttributesChanged(wl);
+        // 设置点击外围解散
+        dialog.setCanceledOnTouchOutside(true);
+    }
+
+    public void addButton(OptionButton... button) {
+        buttons = button;
+        for (int i = button.length-1; i >=0; i--) {
+            if (i == 0) {
+                button[i].setBackground(mContext.getDrawable(R.drawable.white_bom_radius));
+            } else {
+                button[i].setBackground(mContext.getDrawable(R.drawable.whitebg));
+            }
+            View view = button[i].getView();
+            layout.addView(view);
+            if (i != 0) {
+                View line = LayoutInflater.from(mContext).inflate(R.layout.layout_cross_line, null, false);
+                layout.addView(line);
+            }
+        }
+    }
+
+    public void setTitle(CharSequence text) {
+        title.setText(text);
+    }
+
+    public void setTitleTxtSize(float size) {
+        title.setTextSize(size);
+    }
+
+    public void setTitleTxtColor(int textColor) {
+        title.setTextColor(textColor);
+    }
+
+    public void setTitleTxtColor(ColorStateList textColor) {
+        title.setTextColor(textColor);
+    }
+
+    public void setTextSize(float textSize) {
+        for (OptionButton button : buttons) {
+            button.setTextSize(textSize);
+        }
+    }
+
+    public void setTextColor(int textColor) {
+        for (OptionButton button : buttons) {
+            button.setTextColor(textColor);
+        }
+    }
+
+    public void setTextColor(ColorStateList textColor) {
+        for (OptionButton button : buttons) {
+            button.setTextColor(textColor);
+        }
+    }
+
+    public void show() {
+        if (dialog != null) {
+            dialog.show();
+        }
+    }
+
+    public void dismisss() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+    public void isShowTitle(Boolean value) {
+        if (!value) {
+            buttons[buttons.length-1].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
+        }
+        title.setVisibility(value?View.VISIBLE:View.GONE);
+        title_line.setVisibility(value?View.VISIBLE:View.GONE);
+    }
+
+    public void setPadding(int value) {
+        root.setPadding(value,value,value,value);
+    }
+
+    public void setCancelButtonLinter(ButtonOnClickListen listen) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listen.onClick();
+            }
+        });
+    }
+}
