@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private Context context;
     private OptionDialog dialog;
     private Button shooting;
-    private OptionButton shoot,select,ok;
+    private OptionButton shoot, select, ok;
     private final static String TAG = "MainActivity";
 
     @Override
@@ -41,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        shoot = new OptionButton(context,"shoot",(view)->{
+        shoot = new OptionButton(context, "shoot", (view) -> {
             Log.i(TAG, "shoot");
         });
-        select = new OptionButton(context,"select",(view)->{
+        select = new OptionButton(context, "select", (view) -> {
             Log.i(TAG, "select");
         });
-        ok = new OptionButton(context,"ok",(view)->{
+        ok = new OptionButton(context, "ok", (view) -> {
             Log.i(TAG, "ok");
         });
     }
@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
         shooting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.addButton(shoot,select,ok);
-//                dialog.setCancelButtonLinter(()->{
+                dialog.addButton(shoot, select, ok);
+//                dialog.setCancelButtonLinter((view) -> {
 //                    Log.i(TAG, "cancel");
 //                    dialog.dismisss();
 //                });

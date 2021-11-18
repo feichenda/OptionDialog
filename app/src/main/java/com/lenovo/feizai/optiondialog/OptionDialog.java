@@ -35,12 +35,26 @@ public class OptionDialog {
     private View title_line;
     private Button button;
 
+    private Boolean mShowTitleValue;
+    private Integer mPaddingValue;
+
     public OptionDialog(Context context) {
+        this(context, true, 10);
+    }
+
+    public OptionDialog(Context context, Boolean showTitleValue) {
+        this(context, showTitleValue,10);
+    }
+
+    public OptionDialog(Context context, Boolean showTitleValue, Integer paddingValue) {
         mContext = context;
+        mShowTitleValue = showTitleValue;
+        mPaddingValue = paddingValue;
         initDialog();
         setCancelButtonLinter((v) -> {
             cancel();
         });
+
     }
 
     private void initDialog() {
@@ -71,13 +85,15 @@ public class OptionDialog {
         // 设置点击外围解散
         dialog.setCanceledOnTouchOutside(true);
 
-        dialog.setOnDismissListener((DialogInterface dialog)->{
+        dialog.setOnDismissListener((DialogInterface dialog) -> {
             layout.removeAllViews();
         });
 
-        dialog.setOnCancelListener((DialogInterface dialog)->{
+        dialog.setOnCancelListener((DialogInterface dialog) -> {
             layout.removeAllViews();
         });
+
+        setPadding(this.mPaddingValue);
     }
 
     public void addButton(OptionButton... button) {
@@ -85,6 +101,11 @@ public class OptionDialog {
         for (int i = button.length - 1; i >= 0; i--) {
             if (i == 0) {
                 button[i].setBackground(mContext.getDrawable(R.drawable.white_bom_radius));
+            } else if (i == button.length -1){
+                button[i].setBackground(mContext.getDrawable(R.drawable.whitebg));
+                if (!mShowTitleValue){
+                    button[i].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
+                }
             } else {
                 button[i].setBackground(mContext.getDrawable(R.drawable.whitebg));
             }
@@ -133,6 +154,7 @@ public class OptionDialog {
 
     public void show() {
         if (dialog != null) {
+            setShowTitle(this.mShowTitleValue);
             dialog.show();
         }
     }
@@ -149,12 +171,24 @@ public class OptionDialog {
         }
     }
 
-    public void isShowTitle(Boolean value) {
-        if (!value) {
-            buttons[buttons.length - 1].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
-        }
+    public void setShowTitle(Boolean value) {
+        mShowTitleValue = value;
+        title_line.setVisibility(View.GONE);
         title.setVisibility(value ? View.VISIBLE : View.GONE);
-        title_line.setVisibility(value ? View.VISIBLE : View.GONE);
+        if (buttons != null) {
+            if (!value) {
+                buttons[buttons.length - 1].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
+            } else {
+                buttons[buttons.length - 1].setBackground(mContext.getDrawable(R.drawable.whitebg));
+            }
+            title_line.setVisibility(value ? View.VISIBLE : View.GONE);
+        }else {
+            title.setBackground(mContext.getDrawable(R.drawable.button_background));
+        }
+    }
+
+    public Boolean isShowTitle() {
+        return this.mShowTitleValue;
     }
 
     public void setPadding(int value) {
