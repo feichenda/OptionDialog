@@ -3,9 +3,12 @@ package com.lenovo.feizai.optiondialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,7 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.lenovo.feizai.optiondialog.customView.OptionButton;
-import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListen;
+import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListener;
 
 /**
  * @author feizai
@@ -35,6 +38,9 @@ public class OptionDialog {
     public OptionDialog(Context context) {
         mContext = context;
         initDialog();
+        setCancelButtonLinter((v) -> {
+            cancel();
+        });
     }
 
     private void initDialog() {
@@ -45,7 +51,7 @@ public class OptionDialog {
         title_line = view.findViewById(R.id.title_line);
         button = view.findViewById(R.id.cancel_button);
         if (dialog == null) {
-            dialog = new Dialog(mContext,R.style.optiondialogstyle);
+            dialog = new Dialog(mContext, R.style.optiondialogstyle);
         }
         dialog.setContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -64,11 +70,19 @@ public class OptionDialog {
         dialog.onWindowAttributesChanged(wl);
         // 设置点击外围解散
         dialog.setCanceledOnTouchOutside(true);
+
+        dialog.setOnDismissListener((DialogInterface dialog)->{
+            layout.removeAllViews();
+        });
+
+        dialog.setOnCancelListener((DialogInterface dialog)->{
+            layout.removeAllViews();
+        });
     }
 
     public void addButton(OptionButton... button) {
         buttons = button;
-        for (int i = button.length-1; i >=0; i--) {
+        for (int i = button.length - 1; i >= 0; i--) {
             if (i == 0) {
                 button[i].setBackground(mContext.getDrawable(R.drawable.white_bom_radius));
             } else {
@@ -129,24 +143,27 @@ public class OptionDialog {
         }
     }
 
+    public void cancel() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.cancel();
+        }
+    }
+
     public void isShowTitle(Boolean value) {
         if (!value) {
-            buttons[buttons.length-1].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
+            buttons[buttons.length - 1].setBackground(mContext.getDrawable(R.drawable.white_top_radius));
         }
-        title.setVisibility(value?View.VISIBLE:View.GONE);
-        title_line.setVisibility(value?View.VISIBLE:View.GONE);
+        title.setVisibility(value ? View.VISIBLE : View.GONE);
+        title_line.setVisibility(value ? View.VISIBLE : View.GONE);
     }
 
     public void setPadding(int value) {
-        root.setPadding(value,value,value,value);
+        root.setPadding(value, value, value, value);
     }
 
-    public void setCancelButtonLinter(ButtonOnClickListen listen) {
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listen.onClick();
-            }
+    public void setCancelButtonLinter(ButtonOnClickListener listener) {
+        button.setOnClickListener((View v) -> {
+            listener.onClick(v);
         });
     }
 }

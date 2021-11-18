@@ -41,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        shoot = new OptionButton(context,"shoot",()->{
+        shoot = new OptionButton(context,"shoot",(view)->{
             Log.i(TAG, "shoot");
         });
-        select = new OptionButton(context,"select",()->{
+        select = new OptionButton(context,"select",(view)->{
             Log.i(TAG, "select");
         });
-        ok = new OptionButton(context,"ok",()->{
+        ok = new OptionButton(context,"ok",(view)->{
             Log.i(TAG, "ok");
         });
     }
