@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.lenovo.feizai.optiondialog.R;
-import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListen;
+import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListener;
 
 /**
  * @author feizai
@@ -18,15 +18,15 @@ import com.lenovo.feizai.optiondialog.listen.ButtonOnClickListen;
 public class OptionButton {
     private String name;
     private Color color;
-    private ButtonOnClickListen listen;
+    private ButtonOnClickListener listener;
     private Context mContext;
     private Button mButton;
     private View view;
 
-    public OptionButton(Context context,String name,ButtonOnClickListen listen) {
+    public OptionButton(Context context, String name, ButtonOnClickListener listener) {
         mContext = context;
         this.name = name;
-        this.listen = listen;
+        this.listener = listener;
         this.view = initButton();
     }
 
@@ -37,7 +37,7 @@ public class OptionButton {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listen.onClick();
+                listener.onClick();
             }
         });
         return view;
